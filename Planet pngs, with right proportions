@@ -11,17 +11,17 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
 //Height and Width are the same because it s a circle except for the earth because the png s width is smaller, so I made the width 
 //bigger to make it a circle. I randomly assigned the sun a diameter of 300 and then the propotrions between the sun and the other 
-//when proportionsfactor is bigger, it makes planets bigger and closer.
+//when the proportions factor is bigger, it makes planets bigger and closer.
   imageMode(CENTER);
   let centerX = width / 2;
   let centerY = height / 2;
-  let diametersun=300
-  let proportionsfactor=30
-  let diameterearth=diametersun*proportionsfactor/109
-  let diametermars=diameterearth/1.88
-  let distancesunearth=300-proportionsfactor
-  let distancesunmars=distancesunearth*1.6
-  image(imgearth, centerX+distancesunearth, centerY,     diameterearth+0.5*proportionsfactor, diameterearth);
-  image(imgmars, centerX+distancesunmars, centerY, diametermars, diametermars);
-  image(imgsun, centerX, centerY, diametersun, diametersun);
+  let diameterSun=300
+  let proportionsFactor=10
+  let diameterEarth=diameterSun/109*proportionsFactor
+  let diameterMars=diameterEarth/1.88
+  let distanceSunMars=centerX+(width-proportionsFactor)/2-50
+  let distanceSunEarth=centerX+(width-proportionsFactor)/1.6/2-50
+  image(imgearth, distanceSunEarth, centerY,     diameterEarth+0.5*proportionsFactor, diameterEarth);
+  image(imgmars, distanceSunMars, centerY, diameterMars, diameterMars);
+  image(imgsun, centerX, centerY, diameterSun, diameterSun);
 }
