@@ -1,0 +1,37 @@
+let stars = [];
+let numStars = 200
+function setup() {
+  createCanvas(windowWidth, windowHeight); // Set the canvas size
+  background(0); // Set the background color to black
+
+  drawStars(numStars); // Call the function to draw # of stars
+}
+
+function drawStars(numStars) {
+  noStroke(); // No outline for the stars
+
+  for (let i = 0; i < numStars; i++) { // Loop through the number of stars 
+    let star = {
+      x: random(width),
+      y: random(height),
+      size: random(1, 5)
+    };
+
+    // Check if the star overlaps with any existing stars
+    let overlapping = false;
+    for (let existingStar of stars) {
+      let d = dist(star.x, star.y, existingStar.x, existingStar.y); //d = value calculating the distance between the position of the current star and the position of the existing star
+      if (d < star.size + existingStar.size) { //checking if the distance between the position of the current star and the position of an existing star is less than the sum of their sizes.
+        overlapping = true;
+        break; // Stop checking if overlap is found
+      }
+    }
+
+    // If not overlapping, add the star
+    if (!overlapping) {
+      stars.push(star);
+      fill(255); // White color for stars
+      ellipse(star.x, star.y, star.size, star.size); // Draw a white circle (star)
+    }
+  }
+}
