@@ -1,0 +1,71 @@
+let sunDiameter = 100;
+
+let angle = 0;
+let orbitRadius = 300;
+let centripetalAcceleration;
+let sunMass = 1.989 * 10 ** 30; //in kg
+let earthMass = 5.972 * 10 ** 24; //in kg
+let earthRadius = 6371000; //in meters
+
+let gapSize = 10; // Width of the gap for the dotted line (reduced spacing)
+let textGap = 5; // Gap between text and line
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  ellipseMode(CENTER);
+}
+
+function earthOrbit() {
+  let planetY = orbitRadius * sin(radians(angle));
+  let planetX = 500 * cos(radians(angle));
+  let planetDiameter = 100;
+
+  fill("blue");
+  noStroke();
+  circle(planetX, planetY, planetDiameter);
+
+  // Calculate the distance between the Earth and the Sun
+  let distance = dist(0, 0, planetX, planetY);
+
+  // Show the distance with a dotted line
+  stroke("red"); // Color of the line
+  strokeWeight(2); // Thickness of the line
+
+  for (let i = 0; i < distance; i += gapSize) {
+    let x1 = map(i, 0, distance, 0, planetX);
+    let y1 = map(i, 0, distance, 0, planetY);
+    let x2 = map(i + textGap, 0, distance, 0, planetX);
+    let y2 = map(i + textGap, 0, distance, 0, planetY);
+    line(x1, y1, x2, y2);
+  }
+
+  // Display the distance value in the empty space
+  let textX = map(distance / 2, 0, distance, 0, planetX) - 20; // Centered within the gap
+  let textY = map(distance / 2, 0, distance, 0, planetY);
+  fill("red");
+  textSize(14);
+  text(`${distance.toFixed(2)} km`, textX, textY);
+
+  scale(1, -1); // Invert the y-axis
+
+  angle += 1;
+}
+
+function getCentripetalAcceleration() {
+  // Calculate centripetal acceleration
+  centripetalAcceleration = (pow(500, 2) / orbitRadius) * (1 / 1000);
+  return centripetalAcceleration;
+}
+
+function draw() {
+  // This shifts the coordinate system to the middle of the canvas
+  translate(windowWidth / 2, windowHeight / 2);
+  // Turns the y-axis in the proper way
+
+  background("black");
+
+  fill("orange");
+  noStroke();
+  circle(0, 0, sunDiameter);
+  earthOrbit();
+}
