@@ -1,0 +1,12 @@
+function preload() {
+  imgearth = loadImage('https://pngfre.com/wp-content/uploads/earth-png-from-pngfre-8-1024x934.png');
+  imgmars = loadImage('https://upload.wikimedia.org/wikipedia/commons/f/f5/3D_Mars.png');
+  imgsun = loadImage('https://png.pngtree.com/png-clipart/20230518/original/pngtree-realistic-sun-illustration-png-image_9164511.png');
+}
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  image(imgearth, 300, 120, 93, 83);
+  image(imgmars, 400, 140, 42, 42);
+  image(imgsun, 0, 0, 300, 300)
+  //propotrions between the sun and the other planets are divided by 30. The earth stays 2 times 1.88 times bigger than mars, but the sun is now 3.6 times bigger than the earth instead of being 109 times bigger.
+}
