@@ -24,7 +24,7 @@ function setup(){
 }
 
 function draw(){
-  background(img);
+  
 
   rect(9 + ((860-9)/5 * 1), 594, 1, 30);
   rect(9 + ((860-9)/5 * 2), 594, 1, 30);
