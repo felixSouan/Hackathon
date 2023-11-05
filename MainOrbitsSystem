@@ -1,0 +1,112 @@
+
+let time = 0;
+let deltaT
+let centripetalAcceleration
+let gravConstant = 6.67*10**-11
+let marsSemiMajorAxis = 2*2.08448*10**11*(1-0.0934) //Limiting range for the canvas
+let systemScaleFactor
+let orbitToWindowRatio = 15/16
+let planetScaleFactor
+let sunScaleFactor
+let sunMass = 1.9891*10**30
+
+function setup(){
+
+  //Scaling
+  systemScaleFactor =       
+  orbitToWindowRatio*windowHeight/marsSemiMajorAxis
+  sunScaleFactor = systemScaleFactor*50
+  planetScaleFactor = systemScaleFactor*3500
+   createCanvas(windowWidth, windowHeight);
+   ellipseMode(CENTER);
+  
+   angleMode(DEGREES);
+  
+   earth  = new Planet(9.3370*10**10, -1.197634*10**11, 6371000,   5.97219*10**24, 1.496*10**11, 0.0167, planetScaleFactor, 'blue', 365.25);
+   mars   = new Planet(1.85716*10**11, -9.063094*10**10, 3389500,    6.42*10**23, marsSemiMajorAxis, 0.0934, planetScaleFactor, 'orange', 687);
+   sun    = new Planet(0, 0, 696340000, sunMass,  0,  1,   sunScaleFactor, 'yellow', undefined);
+
+}
+
+function draw(){
+  //This shifts the coordinate system to the middle     of the canvas
+  translate(windowWidth/2, windowHeight/2); 
+  //Turns the y axis in the proper way
+  scale(1, -1);
+
+  background("black")
+  
+  earth.appear()
+  mars.appear()
+  sun.appear()
+  
+  earth.orbit()
+  mars.orbit()
+  time = millis()
+  console.log(earth.currentTime - earth.lastTime)
+}
+
+class Planet{
+  constructor(spaceX, spaceY, spaceRadius, mass, spaceSemiMajorAxis, eccentricityFactor, scaleFactor, colour, daysPerRevolution){
+    this.canvasX = spaceX*systemScaleFactor;
+    this.canvasY = spaceY*systemScaleFactor;
+    this.canvasRadius = spaceRadius*scaleFactor
+    this.mass = mass;
+    this.canvasSemiMajorAxis = spaceSemiMajorAxis*systemScaleFactor/2
+    this.eccentricityFactor = eccentricityFactor
+    this.scaleFactor = scaleFactor
+    this.colour = colour
+    this.image = image
+    this.AOfOrbit = this.canvasSemiMajorAxis
+    this.BOfOrbit = this.canvasSemiMajorAxis*(1-eccentricityFactor)
+    this.angle = atan2(this.canvasY,this.canvasX)
+    this.lastTime = millis()
+    this.currentTime = 0
+    this.timeMultiplier = 2**18
+    this.angularSpeed = 360/(daysPerRevolution*24*60*60)
+    
+    this.spaceAcceleration =  
+    gravConstant*sunMass/(dist(spaceX,spaceY,0,0))**2
+    this.accelerationX = systemScaleFactor*this.spaceAcceleration*cos(this.angle)
+    this.accelerationY = systemScaleFactor*this.spaceAcceleration*sin(this.angle)
+    
+    this.spaceVelocity = sqrt(dist(spaceX, spaceY,0,0)*this.spaceAcceleration)
+    this.velocityX = systemScaleFactor*this.spaceVelocity*cos(this.angle)
+    this.velocityY = systemScaleFactor*this.spaceVelocity*sin(this.angle)
+    
+  }
+  
+  appear(){
+    
+    fill(this.colour);
+    noStroke();
+    circle(this.canvasX, this.canvasY, 2*this.canvasRadius);
+  }
+
+  /*orbit(){
+    this.angle = atan2(this.canvasY,this.canvasX)+90
+    let currentTime = millis();
+    let deltaTime = (currentTime - this.lastTime) / 1000;
+    
+    this.accelerationX = systemScaleFactor*this.spaceAcceleration*cos(this.angle)
+    this.velocityX += this.accelerationX*deltaTime*this.timeMultiplier
+    this.canvasX += this.velocityX*deltaTime*this.timeMultiplier
+
+    this.accelerationY = systemScaleFactor*this.spaceAcceleration*sin(this.angle)
+    this.velocityY += this.accelerationY*deltaTime*this.timeMultiplier
+    this.canvasY += this.velocityY*deltaTime*this.timeMultiplier
+
+    this.lastTime = currentTime
+  }*/
+  
+
+  orbit() {
+    this.currentTime = millis()
+    this.canvasX = this.AOfOrbit*cos(this.angle)
+    this.canvasY = this.BOfOrbit*sin(this.angle)
+
+    this.angle += this.angularSpeed*this.timeMultiplier
+    
+  }
+
+}
