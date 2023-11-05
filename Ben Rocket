@@ -1,0 +1,69 @@
+let a, b;  // Semi-major and semi-minor axes
+let x0, y0; // Center coordinates
+let angle = -5.519999999999927; // Initial angle
+let speed = 0.01; // Speed of rotation
+let xOffset, yOffset;
+let centerX;
+let centerY;
+let scaleDown = 0.000000001
+let limitX;
+let limitY;
+
+function preload(){
+  img = loadImage("Cartoon_space_rocket.png");
+}
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  a = 2.1e11 * scaleDown;
+  b = 1.59e11 * scaleDown;
+  xOffset = 9.3370e10 * scaleDown;
+  yOffset = -1.197634e11 * scaleDown;
+  centerX = width / 2;
+  centerY = height / 2;
+  x0 = -2.8e10 * scaleDown;
+  y0 = 0.98e10 * scaleDown;
+  limitX = centerX + (-1.203e11 * scaleDown);
+  limitY = centerY + (1.197634e11 * scaleDown);
+}
+
+function draw() {
+  background(220);
+
+  // Calculate x and y using parametric equations of the ellipse
+  let x = x0 + centerX + a * cos(angle);
+  let y = y0 + centerY + b * sin(angle);
+
+  // Check if the point is within the specified region
+  if (x >= limitX && y <= limitY) {
+    // Draw the circle
+    rotate(angle * scaleDown);
+    image(img, x, y, 50, 50);
+    console.log(angle);
+  }
+
+  // Increment the angle for animation
+  angle -= speed;
+
+  // Reset angle when it completes one rotation
+  if (angle >= TWO_PI) {
+    angle = 0;
+  }
+}
+
+// let angle = 10;
+// let increase = 0.01;
+
+// function setup(){
+//   createCanvas(400, 400);
+// }
+
+// function draw(){
+//   background(220);
+//   translate(width / 2, height / 2);
+//   rotate(angle);
+//   rect(-26, -26, 52, 52);
+
+//   angle -= increase
+  
+// }
