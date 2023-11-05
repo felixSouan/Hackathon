@@ -1,0 +1,61 @@
+let stars = [];
+let numStars = 200;
+let imgstarship;
+let x = 50;
+let y = 50;
+let velocity = 2;
+
+function preload() {
+  imgstarship = loadImage('https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/1631855/spacex-spaceship-clipart-xl.png');
+}
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  background(0); // Set the background color to black
+
+  drawStars(numStars); // Call the function to draw # of stars
+}
+
+function drawStars(numStars) {
+  noStroke(); // No outline for the stars
+
+  for (let i = 0; i < numStars; i++) {
+    let star = {
+      x: random(width),
+      y: random(height),
+      size: random(1, 5)
+    };
+
+    let overlapping = false;
+    for (let existingStar of stars) {
+      let d = dist(star.x, star.y, existingStar.x, existingStar.y);
+      if (d < star.size + existingStar.size) {
+        overlapping = true;
+        break;
+      }
+    }
+
+    if (!overlapping) {
+      stars.push(star);
+      fill(255);
+      ellipse(star.x, star.y, star.size, star.size);
+    }
+  }
+}
+
+function draw() {
+  translate(x, y);
+
+  let rotationAngle = radians(120);
+  rotate(rotationAngle);
+
+  image(imgstarship, 0, 0, 20, 50);
+
+  x += velocity;
+  y += sqrt(1 / 100 * y);
+
+  for (let i = 0; i < stars.length; i++) {
+    fill(255);
+    ellipse(stars[i].x, stars[i].y, stars[i].size, stars[i].size);
+  }
+}
