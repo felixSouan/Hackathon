@@ -1,0 +1,122 @@
+let sunDiameter = 100;
+let angle = 0;
+let orbitRadius = 300;
+let centripetalAcceleration;
+let sunMass = 1.989 * 10 ** 30; //in kg
+let earthMass = 5.972 * 10 ** 24; //in kg
+let earthRadius = 6371000; //in meters
+
+let gapSize = 10; // Width of the gap for the dotted line (reduced spacing)
+let textGap = 5; // Gap between text and line
+
+let imgstarship;
+let x = 500; // Starting position at Earth
+let y = 0; // Starting position at Earth
+let velocity = 2;
+let trail = [];
+let secondOrbitAngle = 0; // Angle for the second orbiting circle
+let isSticking = false;
+
+function preload() {
+  imgstarship = loadImage('https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/1631855/spacex-spaceship-clipart-xl.png');
+}
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  ellipseMode(CENTER);
+}
+
+function earthOrbit() {
+  let planetY = orbitRadius * sin(radians(angle));
+  let planetX = 500 * cos(radians(angle));
+  let planetDiameter = 100;
+
+  fill("blue");
+  noStroke();
+  circle(planetX, planetY, planetDiameter);
+
+  // Calculate the distance between the Earth and the Sun
+  let distance = dist(0, 0, planetX, planetY);
+
+  // Show the distance with a dotted line
+  stroke("red"); // Color of the line
+  strokeWeight(2); // Thickness of the line
+
+  for (let i = 0; i < distance; i += gapSize) {
+    let x1 = map(i, 0, distance, 0, planetX);
+    let y1 = map(i, 0, distance, 0, planetY);
+    let x2 = map(i + textGap, 0, distance, 0, planetX);
+    let y2 = map(i + textGap, 0, distance, 0, planetY);
+    line(x1, y1, x2, y2);
+  }
+
+  // Display the distance value in the empty space
+  let textX = map(distance / 2, 0, distance, 0, planetX) - 20; // Centered within the gap
+  let textY = map(distance / 2, 0, distance, 0, planetY);
+  fill("red");
+  textSize(14);
+  text(`${distance.toFixed(2)} km`, textX, textY);
+
+  scale(1, -1); // Invert the y-axis
+
+  // Draw the spaceship
+  translate(x, y); // Translate to the current (x, y) position
+  let rotationAngle = radians(60); // Rotate by 60 degrees (convert to radians)
+
+  // Apply the rotation to the canvas
+  rotate(rotationAngle);
+
+  // Draw the image at the translated (0, 0) position
+  image(imgstarship, 0, 0, 20, 50);
+
+  if (isSticking) {
+    // Calculate the angle between the ship and the center of the secondOrbit circle
+    let shipAngle = atan2(y, x);
+
+    // Calculate the position at the center of the secondOrbit circle
+    x = 300 * cos(shipAngle);
+    y = 300 * sin(shipAngle);
+
+    // Draw a trail for the spaceship
+    trail.push({ x, y });
+    for (let i = 1; i < trail.length; i++) {
+      line(trail[i - 1].x, trail[i - 1].y, trail[i].x, trail[i].y);
+    }
+    if (trail.length > 50) {
+      trail.shift();
+    }
+  } else {
+    // Update the position
+    x += velocity;
+    y += sqrt(1 / 100 * y);
+
+    // Check if the ship has reached the center of the secondOrbit circle
+    let d = dist(0, 0, x, y);
+    if (d < 5) { // You can adjust the distance threshold
+      isSticking = true;
+    }
+  }
+
+  angle += 1;
+}
+
+function draw() {
+  // This shifts the coordinate system to the middle of the canvas
+  translate(windowWidth / 2, windowHeight / 2);
+  // Turns the y-axis in the proper way
+
+  background("black");
+
+  fill("orange");
+  noStroke();
+  circle(0, 0, sunDiameter);
+  earthOrbit();
+
+  // Calculate the position of the second orbiting circle
+  let secondOrbitX = 300 * cos(radians(secondOrbitAngle));
+  let secondOrbitY = 300 * sin(radians(secondOrbitAngle));
+  fill("green");
+  circle(secondOrbitX, secondOrbitY, 60, 40);
+
+  secondOrbitAngle += 1; // Increment the angle for the second orbit
+}
